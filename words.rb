@@ -3,6 +3,7 @@
 language = ARGV[0]
 filename = "words/"+language+".dic"
 resultFile = "occurences/occurences_"+language+".txt"
+MAX_LENGTH = 10
 
 if (!File.file?(filename))
 	puts "Can't find "+filename
@@ -15,7 +16,7 @@ def getOccurences(filepath)
 	File.open(filepath, :encoding => 'UTF-8') do |f|
 		while line = f.gets
 			line.insert(0, '^')
-			arr = line.downcase.gsub(/\n|\r\n/, '~').split("").each_cons(2).map(&:join)
+			arr = line.downcase.gsub(/\n|\r\n/, '~').split("").each_cons(3).map(&:join)
 			arr.each do |pair|
 				nextChar[pair] += 1
 			end
@@ -49,42 +50,61 @@ def percentageCumulativeRepartition(hash)
 	return percentages
 end
 
-def selectChar(hash, previousChar)
-	filteredPossibilities = hash.select{|key, value| key[0]==previousChar}
+def selectChar3(hash, a, b)
+	filteredPossibilities = hash.select{|key, value| key[0]==a && key[1]==b}
 	b = percentageRepartition(filteredPossibilities)
 	a = weighted_rand(b)
-	return a[1]
+	return a[2]
 end
 
+def selectChar(hash)
+	filteredPossibilities = hash.select{|key, value| key[0]=='^'}
+	b = percentageRepartition(filteredPossibilities)
+	a = weighted_rand(b)
+	return a[1]+a[2]
+end
 
-def weighted_rand(weights = {})
+def weighted_rand(weights)
   #raise 'Probabilities must sum up to 1' unless weights.values.inject(&:+) == 1.0
 
   u = 0.0
-  ranges = Hash[weights.map{ |v, p| [u += p, v] }]
+  ranges = percentageCumulativeRepartition(weights)
+  if weights == {}
+  	return "~~~~"
+  end
 
   u = rand(0...100)
-  ranges.find{ |p, _| p > u }.last
+  ranges.find{ |_, p| p > u }.first
 end
 
-def generateWord(hash, length)
+def generateWord(hash)
 	resultStr = ""
 	# Select the ending possibility first
-	previousChar = '^'
-	nextChar = ""
-	while nextChar!='~' do
+	resultStr = selectChar(hash)
+	previousPChar = resultStr[0]
+	previousChar = resultStr[1]
+
+	nextChar = ''
+	while (true) do
 	#for i in (1..length-1)
-		nextChar = selectChar(hash, previousChar)
-		puts nextChar
+		nextChar = selectChar3(hash, previousPChar, previousChar)
+		if (nextChar=='~')
+			break
+		end
 		resultStr.concat(nextChar)
 		previousChar = nextChar
+		previousPChar = previousChar
 	end
+
+
 
 	return resultStr
 end
 
 
 hash = getOccurences(filename)
-puts generateWord(hash, 6)
+for i in 1..20
+puts generateWord(hash)
+end
 
 #puts getWordsByMatch(filename, "q~")
