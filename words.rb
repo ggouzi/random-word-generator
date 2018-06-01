@@ -14,6 +14,7 @@ def getOccurences(filepath)
 	nextChar = Hash.new(0)
 	File.open(filepath, :encoding => 'UTF-8') do |f|
 		while line = f.gets
+			line.insert(0, '^')
 			arr = line.downcase.gsub(/\n|\r\n/, '~').split("").each_cons(2).map(&:join)
 			arr.each do |pair|
 				nextChar[pair] += 1
@@ -48,16 +49,11 @@ def percentageCumulativeRepartition(hash)
 	return percentages
 end
 
-def selectChar(hash, nextChar)
-	filteredPossibilities = hash.select{|key, value| key[1]==nextChar}
+def selectChar(hash, previousChar)
+	filteredPossibilities = hash.select{|key, value| key[0]==previousChar}
 	b = percentageRepartition(filteredPossibilities)
-	puts b
-
 	a = weighted_rand(b)
-	puts a
-	return a[0]
-
-
+	return a[1]
 end
 
 
@@ -74,13 +70,14 @@ end
 def generateWord(hash, length)
 	resultStr = ""
 	# Select the ending possibility first
-	nextChar = '~'
-	ending = selectChar(hash, nextChar)
-	for i in (1..length)
-		char = selectChar(hash, nextChar)
-		puts char
-		resultStr.concat(char)
-		nextChar = char
+	previousChar = '^'
+	nextChar = ""
+	while nextChar!='~' do
+	#for i in (1..length-1)
+		nextChar = selectChar(hash, previousChar)
+		puts nextChar
+		resultStr.concat(nextChar)
+		previousChar = nextChar
 	end
 
 	return resultStr
