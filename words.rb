@@ -2,6 +2,7 @@
 
 DELIMITER_BEGIN='^'
 DELIMITER_END='$'
+MIN_LENGTH_WORD=4
 
 if ARGV.length!=2
   puts "Need to have two params: Language and number of words to generate"
@@ -79,7 +80,11 @@ end
 
 
 hash = getOccurences(filename)
-for i in 1..NUMBER_WORDS
-	puts generateWord(hash)
+words = Array.new
+until words.length==NUMBER_WORDS
+	word = generateWord(hash)
+	if word.length >= MIN_LENGTH_WORD
+		words.push(word)
+		puts word
+	end
 end
-
