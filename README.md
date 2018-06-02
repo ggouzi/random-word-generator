@@ -13,6 +13,14 @@
 | ------------- | ------------- |
 |<ul><li>sylvien</li><li>amile</li><li>céloé</li><li>landrine</li><li>arictore</li><li>lucine</li><li>dorianne</li><li>yanaïs</li><li>théode</li><li>lune</li></ul>| <ul><li>berista</li><li>rudisto</li><li>pietto</li><li>graziorgia</li><li>alidina</li><li>marodrina</li><li>calbenzo</li><li>sebio</li><li>nicarda</li><li>romilliano</li></ul>
 
+### Supported languages
+- FR
+- ES
+- DE
+- FI
+- SE
+- BR
+
 ## Sources
 
 http://www.lexique.org/listes/liste_mots.php
