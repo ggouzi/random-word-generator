@@ -22,13 +22,13 @@ if (!File.file?(filename))
 	exit 0
 end
 
-
 def getOccurences(filepath)
 	nextChar = Hash.new(0)
 	File.open(filepath, :encoding => 'UTF-8') do |f|
 		while line = f.gets
 			line.insert(0, DELIMITER_BEGIN)
-			arr = line.downcase.gsub(/\n|\r\n/, '$').split("").each_cons(3).map(&:join)
+			# Replace line ending chars and generate possible combinations of 3 consecutive chars
+			arr = line.downcase.gsub(/\n|\r\n/, DELIMITER_END).split("").each_cons(3).map(&:join)
 			arr.each do |pair|
 				nextChar[pair] += 1
 			end
@@ -37,7 +37,7 @@ def getOccurences(filepath)
 	return nextChar.sort_by {|k,v| v}.reverse.to_h
 end
 
-def selectChar3(hash, a, b)
+def selectNextChar(hash, a, b)
 	filteredPossibilities = hash.select{|key, value| key[0]==a && key[1]==b}
 	selectedTriplet = selectTriplet(filteredPossibilities)
 	return selectedTriplet[2]
@@ -50,7 +50,6 @@ def selectFirstChars(hash)
 end
 
 def selectTriplet(weights)
-  
 	unless weights!={} 
 		return DELIMITER_END*4 
 	end
@@ -70,7 +69,7 @@ def generateWord(hash)
 
 	until nextChar==DELIMITER_END
 		resultStr.concat(nextChar)
-		nextChar = selectChar3(hash, previousPChar, previousChar)
+		nextChar = selectNextChar(hash, previousPChar, previousChar)
 		previousPChar = previousChar
 		previousChar = nextChar
 	end
@@ -78,13 +77,12 @@ def generateWord(hash)
 	return resultStr
 end
 
-
 hash = getOccurences(filename)
-words = Array.new
-until words.length==NUMBER_WORDS
+i=0
+until i==NUMBER_WORDS
 	word = generateWord(hash)
 	if word.length >= MIN_LENGTH_WORD
-		words.push(word)
+		i=i+1
 		puts word
 	end
 end
