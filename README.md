@@ -1,5 +1,6 @@
 # Word Generator
 
+## Examples
 ### Examples of generated words
 
 | FR|DE|ES|SE|FI|BR
@@ -13,13 +14,22 @@
 | ------------- | ------------- |
 |<ul><li>sylvien</li><li>amile</li><li>céloé</li><li>landrine</li><li>arictore</li><li>lucine</li><li>dorianne</li><li>yanaïs</li><li>théode</li><li>lune</li></ul>| <ul><li>berista</li><li>rudisto</li><li>pietto</li><li>graziorgia</li><li>alidina</li><li>marodrina</li><li>calbenzo</li><li>sebio</li><li>nicarda</li><li>romilliano</li></ul>
 
-### Supported languages
+## Principle
+This generator is based on a 2-level markov chain system
+
+The idea is to create a hash based on an input dictionary file.
+Hash key: Triplet of characters
+Hash value: Probablity that, in a word, the two first character are followed by the last
+
+## Supported languages
 - FR
 - ES
 - DE
 - FI
 - SE
 - BR
+
+## Based on https://sciencetonnante.wordpress.com/2015/10/16/la-machine-a-inventer-des-mots-video/
 
 ## Sources
 

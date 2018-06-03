@@ -4,24 +4,6 @@ DELIMITER_BEGIN='^'
 DELIMITER_END='$'
 MIN_LENGTH_WORD=4
 
-if ARGV.length!=2
-  puts "Need to have two params: Language and number of words to generate"
-  exit
-end
-
-NUMBER_WORDS = ARGV[1].to_i
-if ARGV[1].to_i.to_s!=NUMBER_WORDS.to_s
-	puts "Cannot parse "+ARGV[1]+" in a number"
-end
-
-language = ARGV[0]
-filename = "words/"+language+".dic"
-
-if (!File.file?(filename))
-	puts "Can't find "+filename
-	exit 0
-end
-
 def getOccurences(filepath)
 	nextChar = Hash.new(0)
 	File.open(filepath, :encoding => 'UTF-8') do |f|
@@ -75,14 +57,4 @@ def generateWord(hash)
 	end
 
 	return resultStr
-end
-
-hash = getOccurences(filename)
-i=0
-until i==NUMBER_WORDS
-	word = generateWord(hash)
-	if word.length >= MIN_LENGTH_WORD
-		i=i+1
-		puts word
-	end
 end
